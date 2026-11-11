@@ -79,7 +79,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>批量加白边并署名</h1>
+  <h1>批量加白边并署名 <span style="font-size:12px;color:#6b6b6b;">v3</span></h1>
   <p class="sub">拖入或选择多张照片，自动加 130px 白边、在右下角署名并编号，处理完自动下载。</p>
 
   <div class="card">
@@ -175,24 +175,6 @@
     });
   }
 
-  function drawText(ctx, text, canvasW, canvasH, maxWidth, opts) {
-    let fontSize = opts.fontSize;
-    ctx.textBaseline = 'middle';
-    let m;
-    do {
-      ctx.font = '600 ' + fontSize + 'px ' + opts.family;
-      m = ctx.measureText(text).width;
-      if (m <= maxWidth) break;
-      fontSize--;
-    } while (fontSize > 14);
-    ctx.textAlign = 'right';
-    ctx.fillStyle = opts.color;
-    const x = canvasW - opts.marginRight;
-    const y = opts.centerY;
-    ctx.fillText(text, x, y);
-    return fontSize;
-  }
-
   async function processAll() {
     if (busy) return;
     if (!files.length) { status.textContent = '请先导入照片'; return; }
@@ -219,13 +201,14 @@
 
         const text = label + (start + i);
         const fontSize = Math.round(border * 0.34);
-        drawText(ctx, text, c.width, c.height, c.width - border * 2, {
-          fontSize: fontSize,
-          family: '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
-          color: '#1f1f1f',
-          marginRight: Math.round(border * 0.5),
-          centerY: c.height - border / 2
-        });
+        const marginRight = Math.round(border * 0.5);
+        const textX = c.width - marginRight;
+        const textY = c.height - border / 2;
+        ctx.font = '600 ' + fontSize + 'px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#1f1f1f';
+        ctx.fillText(text, textX, textY);
 
         const a = document.createElement('a');
         a.download = f.name.replace(/(\.[^.]+)$/, '') + '_' + (start + i) + '$1';
