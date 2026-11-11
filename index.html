@@ -177,15 +177,15 @@
 
   function drawText(ctx, text, w, h, maxWidth, opts) {
     let fontSize = opts.fontSize;
-    ctx.font = '600 ' + fontSize + 'px ' + opts.family;
-    let m = ctx.measureText(text).width;
-    while (m > maxWidth && fontSize > 10) {
-      fontSize--;
+    ctx.textBaseline = 'middle';
+    let m;
+    do {
       ctx.font = '600 ' + fontSize + 'px ' + opts.family;
       m = ctx.measureText(text).width;
-    }
+      if (m <= maxWidth) break;
+      fontSize--;
+    } while (fontSize > 12);
     ctx.textAlign = 'right';
-    ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = opts.color;
     ctx.fillText(text, w - opts.paddingRight, h - opts.paddingBottom);
     return fontSize;
@@ -216,13 +216,13 @@
         ctx.drawImage(img, border, border);
 
         const text = label + (start + i);
-        const fontSize = Math.round(Math.min(iw, ih) * 0.06);
-        drawText(ctx, text, c.width, c.height, Math.min(c.width * 0.7, iw), {
-          fontSize: Math.max(24, fontSize),
+        const fontSize = Math.round(border * 0.42);
+        drawText(ctx, text, c.width, c.height, c.width - border * 2, {
+          fontSize: fontSize,
           family: '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
           color: '#1f1f1f',
-          paddingRight: border * 0.35,
-          paddingBottom: border * 0.35
+          paddingRight: Math.round(border * 0.5),
+          paddingBottom: Math.round(c.height - border / 2)
         });
 
         const a = document.createElement('a');
