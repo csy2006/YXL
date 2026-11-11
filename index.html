@@ -175,7 +175,7 @@
     });
   }
 
-  function drawText(ctx, text, w, h, maxWidth, opts) {
+  function drawText(ctx, text, canvasW, canvasH, maxWidth, opts) {
     let fontSize = opts.fontSize;
     ctx.textBaseline = 'middle';
     let m;
@@ -184,10 +184,12 @@
       m = ctx.measureText(text).width;
       if (m <= maxWidth) break;
       fontSize--;
-    } while (fontSize > 12);
+    } while (fontSize > 14);
     ctx.textAlign = 'right';
     ctx.fillStyle = opts.color;
-    ctx.fillText(text, w - opts.paddingRight, h - opts.paddingBottom);
+    const x = canvasW - opts.marginRight;
+    const y = opts.centerY;
+    ctx.fillText(text, x, y);
     return fontSize;
   }
 
@@ -216,13 +218,13 @@
         ctx.drawImage(img, border, border);
 
         const text = label + (start + i);
-        const fontSize = Math.round(border * 0.28);
+        const fontSize = Math.round(border * 0.34);
         drawText(ctx, text, c.width, c.height, c.width - border * 2, {
           fontSize: fontSize,
           family: '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
           color: '#1f1f1f',
-          paddingRight: Math.round(border * 0.5),
-          paddingBottom: Math.round(c.height - border / 2)
+          marginRight: Math.round(border * 0.5),
+          centerY: c.height - border / 2
         });
 
         const a = document.createElement('a');
