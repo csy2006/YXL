@@ -54,6 +54,8 @@
     width: 100%; max-width: 320px; padding: 8px 10px; border: 1px solid var(--border);
     border-radius: 6px; font-size: 14px; background: #fff; color: var(--text);
   }
+  input[type="range"] { flex: 1; accent-color: var(--accent); }
+  .row .val { font-size: 13px; color: var(--muted); min-width: 56px; text-align: right; font-variant-numeric: tabular-nums; }
   .chk { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
   .chk input { accent-color: var(--accent); width: 16px; height: 16px; }
 
@@ -102,6 +104,11 @@
       <input type="number" id="bw" value="130" min="0" max="500">
     </div>
     <div class="row">
+      <label>字号（相对白边）</label>
+      <input type="range" id="fontPct" min="10" max="80" value="50">
+      <span class="val" id="fontPctVal">50%</span>
+    </div>
+    <div class="row">
       <label>起始编号</label>
       <input type="number" id="startNum" value="1" min="1">
     </div>
@@ -123,9 +130,12 @@
   const $ = id => document.getElementById(id);
   const drop = $('drop'), fileInput = $('file');
   const labelText = $('labelText'), bw = $('bw'), startNum = $('startNum');
+  const fontPct = $('fontPct'), fontPctVal = $('fontPctVal');
   const autoDownload = $('autoDownload'), go = $('go'), status = $('status'), grid = $('grid');
   let files = [];
   let busy = false;
+
+  fontPct.addEventListener('input', () => { fontPctVal.textContent = fontPct.value + '%'; });
 
   drop.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', e => { addFiles(e.target.files); fileInput.value = ''; });
@@ -200,7 +210,7 @@
         ctx.drawImage(img, border, border);
 
         const text = label + (start + i);
-        const fontSize = Math.round(border * 0.50);
+        const fontSize = Math.round(border * (parseInt(fontPct.value) || 50) / 100);
         const marginRight = Math.round(border * 0.5);
         const textX = c.width - marginRight;
         const textY = c.height - border / 2;
